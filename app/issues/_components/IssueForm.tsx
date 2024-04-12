@@ -2,7 +2,7 @@
 
 import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from "@/app/components/Spinner";
-import { createIssueSchema } from "@/app/validationSchemas";
+import { issueSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Issue } from "@prisma/client";
 import { Button, Callout, TextField } from "@radix-ui/themes";
@@ -14,19 +14,18 @@ import { Controller, useForm } from "react-hook-form";
 import SimpleMDE from "react-simplemde-editor";
 import { z } from "zod";
 
-type IssueFormData = z.infer<typeof createIssueSchema>;
+type IssueFormData = z.infer<typeof issueSchema>;
 
-
-const IssueForm = ({issue}:{issue?:Issue}) => { 
+const IssueForm = ({ issue }: { issue?: Issue }) => {
   const router = useRouter();
-  
+
   const {
     register,
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<IssueFormData>({
-    resolver: zodResolver(createIssueSchema),
+    resolver: zodResolver(issueSchema),
   });
 
   const [error, setError] = useState("");
@@ -42,8 +41,7 @@ const IssueForm = ({issue}:{issue?:Issue}) => {
       setSubmitting(false);
       setError("An unexpected error occurred.");
     }
-  })
-
+  });
 
   return (
     <div className="max-w-xl">
@@ -52,11 +50,12 @@ const IssueForm = ({issue}:{issue?:Issue}) => {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form
-        className=" space-y-3"
-        onSubmit={onSubmit}
-      >
-        <TextField.Root defaultValue={issue?.title} placeholder="Title" {...register("title")} />
+      <form className=" space-y-3" onSubmit={onSubmit}>
+        <TextField.Root
+          defaultValue={issue?.title}
+          placeholder="Title"
+          {...register("title")}
+        />
         <ErrorMessage>{errors.title?.message}</ErrorMessage>
         <Controller
           name="description"
